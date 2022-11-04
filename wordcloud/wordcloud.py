@@ -27,6 +27,9 @@ from PIL import ImageDraw
 from PIL import ImageFilter
 from PIL import ImageFont
 
+from pilmoji import Pilmoji
+from pilmoji.source import AppleEmojiSource
+
 from .query_integral_image import query_integral_image
 from .tokenization import unigrams_and_bigrams, process_tokens
 
@@ -291,7 +294,7 @@ class WordCloud(object):
             ``words_`` is now a dictionary
 
     ``layout_`` : list of tuples ((string, float), int, (int, int), int, color))
-        Encodes the fitted word cloud. For each word, it encodes the string, 
+        Encodes the fitted word cloud. For each word, it encodes the string,
         normalized frequency, font size, position, orientation, and color.
         The frequencies are normalized by the most commonly occurring word.
         The color is in the format of 'rgb(R, G, B).'
@@ -655,7 +658,9 @@ class WordCloud(object):
         img = Image.new(self.mode, (int(width * self.scale),
                                     int(height * self.scale)),
                         self.background_color)
-        draw = ImageDraw.Draw(img)
+        # draw = ImageDraw.Draw(img)
+        # Make draw for supporting emoji drawing
+        draw = Pilmoji(img, source = AppleEmojiSource)
         for (word, count), font_size, position, orientation, color in self.layout_:
             font = ImageFont.truetype(self.font_path,
                                       int(font_size * self.scale))
